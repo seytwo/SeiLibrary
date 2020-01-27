@@ -1,10 +1,12 @@
-class Canvas extends Base {
-    constructor() {
+class Canvas extends Base 
+{
+    constructor() 
+    {
         super(-1, "canvas");
         this.visible = false;
         this.selectable = false;
 
-        //
+        // インスタンスを登録
         canvas = this;
 
         // キャンバス上の図形
@@ -62,75 +64,86 @@ class Canvas extends Base {
         
     }
 
-    isDragging() {
-        return this._dragging;
-    }
-    set dragging(value) {
-        this._dragging = value;
-    }
-
-    contains(position) {
+    contains(position) 
+    {
         return true; // イベントハンドラを起動するため
     }
 
-    getCorners(){
-        return {
-            "left_top" : new Point("left_top", 
-                Vector.convert([ 0, 0 ])),
-            "right_top" : new Point("right_top", new Vector([
-                new Variable(() => canvas.controll.width),
-                new Constant(0)
-            ])),
-            "left_bottom" : new Point("left_bottom", new Vector([
-                new Constant(0),
-                new Variable(() => canvas.controll.height)
-            ])),
-            "right_bottom" : new Point("right_bottom", new Variable([
-                new Variable(() => canvas.controll.width),
-                new Variable(() => canvas.controll.height)
-            ]))
-        };
-    }
-
-    addFigure(figure){
+    // 図形を追加
+    addFigure(figure)
+    {
         this.figures.push(figure);
         this.figureMap[figure.id] = figure;
     }
-    removeFigure(figure){
+    removeFigure(figure)
+    {
         // 
     }
 
-    initializeCanvasEventHandler(){
+    // 描画を更新
+    update()
+    {
+        this.clear();
+        for (const figure of this.figures) {
+            if (figure.isVisible()) {
+                figure.draw();
+            }
+        }
+    }
+    clear() 
+    {
+        this.context.clearRect(0, 0, 
+            this.controll.width, 
+            this.controll.height
+        );
+    }
+    
+    // キャンバスイベントハンドラを初期化
+    initializeCanvasEventHandler()
+    {
         const _this = this;
-        this.controll.onmousemove = (event) => {
+        this.controll.onmousemove = (event) => 
+        {
             _this.canvasEventHandler(event);
         };
-        this.controll.onmousedown = (event) => {
+        this.controll.onmousedown = (event) => 
+        {
             _this.canvasEventHandler(event);
         };
-        this.controll.onmouseup = (event) => {
+        this.controll.onmouseup = (event) => 
+        {
             _this.canvasEventHandler(event);
         };
-        document.onkeydown = (event) => {
+        document.onkeydown = (event) => 
+        {
             _this.canvasEventHandler(event);
         };
-        document.onkeyup = (event) => {
+        document.onkeyup = (event) => 
+        {
             _this.canvasEventHandler(event);
         };
     }
-    canvasEventHandler(event) {
+    canvasEventHandler(event) 
+    {
 
         // イベント引数を更新 // 無くしたい
-        if (event.clientX != undefined) {
+        if (event.clientX != undefined) 
+        {
             this.pointer.event = event;
         }
 
+        for (const figure of this.figures) 
+        {
+            figure.pointed = false;
+        }
+
         // ポインタが重ねられている図形のイベントハンドラを実行
-        const figures = this.getPointedFigures(this.pointer.position);
-        //console.log("---", event.type);
-        for (const figure of figures) {
-            //console.log(figure);
-            for (const eventHandler of this.eventHandlers[event.type][figure.id]) {
+        for (const figure of this.getPointedFigures(this.pointer.position)) 
+        {
+            figure.pointed = true;
+
+            for (const eventHandler of this.eventHandlers[event.type][figure.id]) 
+            {
                 eventHandler(event, figure);
             }
         }
@@ -139,17 +152,11 @@ class Canvas extends Base {
         this.update();
     }
 
+    // 図形を取得
     getPointedFigures(position)
     {
-        const figures = [];
-        for (const figure of this.figures) 
-        {
-            if (figure.contains(position))
-            {
-                figures.push(figure);
-            }
-        }
-        return figures;
+        return this.figures.filter(
+            (figure) => figure.contains(position));
     }
     getVisibleFigures(position)
     {
@@ -162,116 +169,156 @@ class Canvas extends Base {
         return this.getVisibleFigures(position).filter(
             (figure) => figure.isSelectable() && !figure.isSelected());
     }
-    getSelectedFigures(position) {
-        return this.getVisibleFigures(position).filter(
+    getSelectedFigures(position) 
+    {
+        return this.getPointedFigures(position).filter(
             (figure) => figure.isSelected());
     }
     getMovableFigures(position)
     {
-        return this.getSelectableFigures(position).filter(
+        return this.getSelectedFigures(position).filter(
             (figure) => figure.isMovable());
     }
 
-    initializeKeyEventHandler() {
+    // キーイベントハンドラ
+    initializeKeyEventHandler() 
+    {
         this.addEventHandler(this, "keydown", this.keydown);
         this.addEventHandler(this, "keyup", this.keyup);
     }
-    keydown(event, _this) {
+    keydown(event, _this) 
+    {
         _this.keys.add(event.key);
     }
-    keyup(event, _this) {
+    keyup(event, _this)
+    {
         _this.keys.delete(event.key);
         _this.keys.delete(event.key.toUpperCase());
         _this.keys.delete(event.key.toLowerCase());
     }
 
-    initializeSelectEventHandler(){
+    // 選択イベントハンドラ
+    initializeSelectEventHandler()
+    {
         this.addEventHandler(this, "mousedown", this.mousedown_select);
     }
-    mousedown_select(event, _this){
+    mousedown_select(event, _this)
+    {
         console.log("[select.mousedown]");
 
-        const figures = _this.getSelectableFigures(_this.pointer.position);
+        // 選択可能な図形を取得
+        const selectables = _this.getSelectableFigures(_this.pointer.position);
 
-        // リセット
-        if (figures.length == 0 && !event.shiftKey) {
+        // 選択済みの図形を取得
+        const selecteds = _this.getSelectedFigures(_this.pointer.position);
+
+        // リセット：選択可能な図形がない，選択済みの図形がない
+        // シフトキーを押していない(頂点連続生成のため) // 整理が必要
+        if (selectables.length == 0 && selecteds.length == 0 && !event.shiftKey) 
+        {
             _this.resetSelect();
         }
 
-        for (const figure of figures) {
-            
-            // 選択
-            if (!event.ctrlKey) {
-                _this.resetSelect();
-                
-                _this.selectedFigures.push(figure);
-                _this.selectedFigureMap[figure.id] = figure;
-                figure.selected = true;
-            }
+        // 単独選択：選択済み図形がなく，コントロールキーを押していない
+        if (selecteds.length == 0 && !event.ctrlKey)
+        {
+            // リセット
+            _this.resetSelect();
+        }
     
+        // すべての選択可能図形に対して
+        for (const figure of selectables) 
+        {
             // 追加
-            if (event.ctrlKey) {
-                _this.selectedFigures.push(figure);
-                _this.selectedFigureMap[figure.id] = figure;
-                figure.selected = true;
-            }
+            _this.selectedFigures.push(figure);
+            _this.selectedFigureMap[figure.id] = figure;
+            figure.selected = true;
         }
     }
     resetSelect() {
         console.log("resetSelect");
 
-        for (const figure of this.selectedFigures) {
+        for (const figure of this.selectedFigures) 
+        {
             figure.selected = false;
         }
         this.selectedFigures = [];
         this.selectedFigureMap = {};
     }
 
-    initializeMoveEventHandler(){
+    // 移動イベントハンドラ
+    isDragging() 
+    {
+        return this._dragging;
+    }
+    set dragging(value) 
+    {
+        this._dragging = value;
+    }
+    initializeMoveEventHandler()
+    {
         this.addEventHandler(this, "mousedown", this.mousedown_move);
         this.addEventHandler(this, "mousemove", this.mousemove_move);
         this.addEventHandler(this, "mouseup", this.mouseup_move);
     }
-    mousedown_move(event, _this) {
+    mousedown_move(event, _this) 
+    {
         console.log("[move.mousedown]");
 
         _this.from = _this.pointer.position.value();
         _this.dragging = true;
     }
-    mousemove_move(event, _this){
-
+    mousemove_move(event, _this)
+    {
         if (!_this.isDragging()) {
             return;
         }
         
         console.log("[move.mousemove]");
         
+        // 移動先の位置を取得
         const to = _this.pointer.position.value();
+
+        // すべての選択図形に対して
         for (const figure of _this.selectedFigures) {
+
+            // 移動後の位置を取得
             const position = figure.position.add(to.sub(_this.from));
-            figure.position.get(0).set(position.get(0).get());
+
+            // 更新
+            figure.position.get(0).set(position.get(0).get()); // ベクトルも変数化する？
             figure.position.get(1).set(position.get(1).get());
         }
+
+        // 移動前の位置を更新
         _this.from = to;
     }
-    mouseup_move(event, _this){
+    mouseup_move(event, _this)
+    {
         console.log("[move.mouseup]");
+        
         _this.from = null;
         _this.dragging = false;
     }
-
-    update(){
-        this.clear();
-        for (const figure of this.figures) {
-            if (figure.isVisible()) {
-                figure.draw();
-            }
-        }
-    }
-    clear() {
-        this.context.clearRect(0, 0, 
-            this.controll.width, 
-            this.controll.height
-        );
+    
+    // 四隅
+    getCorners()
+    {
+        return {
+            "left_top" : new Point("left_top", 
+                Vector.convert([ 0, 0 ])),
+            "right_top" : new Point("right_top", new Vector([
+                new Variable(() => canvas.controll.width),
+                new Constant(0)
+            ])),
+            "left_bottom" : new Point("left_bottom", new Vector([
+                new Constant(0),
+                new Variable(() => canvas.controll.height)
+            ])),
+            "right_bottom" : new Point("right_bottom", new Vector([
+                new Variable(() => canvas.controll.width),
+                new Variable(() => canvas.controll.height)
+            ]))
+        };
     }
 }

@@ -37,8 +37,10 @@ class Point extends Figure {
             0, 2 * Math.PI, false 
         );
         
+        canvas.context.strokeStyle = this.colors[selected];
         canvas.context.fillStyle = this.colors[selected];
         canvas.context.fill();
+        canvas.context.stroke();
     }
     
     static initializeEventHandler() {

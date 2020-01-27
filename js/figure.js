@@ -1,6 +1,8 @@
 let _count = 0;
-class Figure extends Base {
-    constructor(name, position) {
+class Figure extends Base 
+{
+    constructor(name, position) 
+    {
         super(_count, name, position);
         _count++;
 
@@ -8,7 +10,8 @@ class Figure extends Base {
         canvas.addFigure(this);
 
         // 描画色：{ selected : color }
-        this.colors = {
+        this._colors = 
+        {
             false : "black",
             true : "rgba(255, 0, 0, 0.5)"
         };
@@ -17,8 +20,15 @@ class Figure extends Base {
         this.initializeEventHandler();
     }
 
+    // 色
+    get colors() 
+    {
+        return this._colors;
+    }
+
     // イベントハンドラ
-    initializeEventHandler(){
+    initializeEventHandler()
+    {
         canvas.addEventHandler(this, "mousemove", (event, _this) => {
             _this.eventHandler(event);
         });
@@ -35,13 +45,15 @@ class Figure extends Base {
             _this.eventHandler(event);
         });
     }
-    eventHandler(event) {
+    eventHandler(event) 
+    {
         for (const id in this.eventHandlers[event.type]) {
             this.eventHandlers[event.type][id](event);
         }
     }
     
-    draw() {
+    draw() 
+    {
         // 抽象メソッド
     }
 }

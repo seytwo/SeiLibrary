@@ -8,7 +8,7 @@ class Pointer extends Point {
         ]));
         
         // フラグ
-        // this.visible = true;
+        this.visible = false;
         this.selectable = false;
 
         // イベント引数

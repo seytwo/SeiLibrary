@@ -1,8 +1,10 @@
-class ConvexHull extends Hull {
-    constructor(name, points) {
+class ConvexHull extends Hull 
+{
+    constructor(name, points) 
+    {
         super(name, points);
-        this.color = "rgba(255, 0, 0, 0.5)";
 
+        // 重心
         this._center = new Point("center", new Vector([
             new Variable(() => getCenter(this.points).get(0).get()),
             new Variable(() => getCenter(this.points).get(1).get())
@@ -10,62 +12,57 @@ class ConvexHull extends Hull {
         this._center.visible = false;
     }
 
-    get center() {
+    // 重心
+    get center() 
+    {
         return this._center;
     }
 
-    drawPoints() {
+    // 描画頂点
+    drawPoints() 
+    {
         return GrahamScan(this);
     }
     
-    static initializeEventHandler() {
+    // イベントハンドラ
+    static initializeEventHandler() 
+    {
         canvas.addEventHandler(canvas, "mousedown", ConvexHull.mousedown);
     }
-    static mousedown(event, _this) {
+    static mousedown(event, _this) 
+    {
         console.log("[convexhull.mousedown]");
 
-        if (!_this.keys.has("x") && !_this.keys.has("X")) {
+        // xが押下されていない場合
+        if (!_this.keys.has("x") && !_this.keys.has("X")) 
+        {
+            // 凸包の作成をリセット
             _this.convexhull = null;
             return;
         }
 
-        if (_this.convexhull == null) {
+        // 凸法を作成していない場合
+        if (_this.convexhull == null) 
+        {
+            // 凸法を初期化
             _this.convexhull = new ConvexHull("convexhull", []);
         }
 
+        // 凸法の頂点をリセット
         _this.convexhull.reset();
-        for (const point of _this.selectedFigures) {
-            if (point instanceof Point) {
-                _this.convexhull.points.push(point);
-            }
+
+        // すべての選択済みの頂点に対して
+        for (const figure of _this.selectedFigures
+                .filter((figure) => figure instanceof Point)) 
+        {
+            // 凸法に追加
+            _this.convexhull.points.push(figure);
         }
-        
-        //_this.mousedown_select(event, _this);
     }
 }
 
-function getAngle(vector1, vector2, origin = null) {
-    if (origin == null) {
-        origin = Vector.convert([0, 0]);
-    }
-    const direction1 = vector1.sub(origin);
-    const direction2 = vector2.sub(origin);
-    return Math.acos(direction1.unit().dot(direction2.unit()));
-}
-function getOrientedAngle(vector1, vector2, origin = null) {
-    if (origin == null) {
-        origin = Vector.convert([0, 0]);
-    }
-    const direction1 = vector1.sub(origin);
-    const direction2 = vector2.sub(origin);
-    const angle = Math.acos(direction1.unit().dot(direction2.unit()));
-
-    const sign = direction1.get(0).get() * direction2.get(1).get() 
-        - direction1.get(1).get() * direction2.get(0).get();
-    return Math.sign(sign) * angle;
-}
-
-function Elimination(points) {
+function Elimination(points) 
+{
     if (points.length <= 3) {
         return points;
     }
@@ -80,8 +77,8 @@ function Elimination(points) {
     return selecteds;
 }
 
-function GrahamScan(convexhull) {
-
+function GrahamScan(convexhull) 
+{
     let points = convexhull.points;
     const CENTER = convexhull.center;
     const POINTS = [];
@@ -134,7 +131,10 @@ function GrahamScan(convexhull) {
 
     return selecteds;
 }
-function getCenter(points) {
+
+// 重心を取得
+function getCenter(points) 
+{
     let center = Vector.convert([0, 0]);
     for (const point of points) {
         center = center.add(point.position);
