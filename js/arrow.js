@@ -82,7 +82,7 @@ class Arrow extends Segment {
     static mousedown(event, _this) {
         console.log("[arrow.mousedown]");
 
-        if (!_this.keys.has("a") && !_this.keys.has("A")) {
+        if (!_this.keys.has("q") && !_this.keys.has("Q")) {
             return;
         }
 

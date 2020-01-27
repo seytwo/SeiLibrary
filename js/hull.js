@@ -58,6 +58,8 @@ class Hull extends Figure {
     static mousedown(event, _this) {
         console.log("[hull.mousedown]");
 
+        return; // とりま
+
         if (!_this.keys.has("q") && !_this.keys.has("Q")) {
             _this.hull = null;
             return;
