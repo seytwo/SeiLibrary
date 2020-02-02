@@ -1,30 +1,27 @@
 <html>
     <head>
         <script type="text/javascript" src="load.js"></script>
-        <script type="text/javascript" src="base.js"></script>
-        <script type="text/javascript" src="scalar.js"></script>
-        <script type="text/javascript" src="vector.js"></script>
-        <script type="text/javascript" src="matrix.js"></script>
-        <script type="text/javascript" src="canvas.js"></script>
-        <script type="text/javascript" src="figure.js"></script>
-        <script type="text/javascript" src="point.js"></script>
-        <script type="text/javascript" src="pointer.js"></script>
-        <script type="text/javascript" src="hull.js"></script>
-        <script type="text/javascript" src="convexhull.js"></script>
-        <script type="text/javascript" src="segment.js"></script>
-        <script type="text/javascript" src="arrow.js"></script>
-        <script type="text/javascript" src="line.js"></script>
-        <script type="text/javascript" src="halfspace.js"></script>
-        <script type="text/javascript" src="polyhedron.js"></script>
+        <script type="text/javascript" src="matrix\scalar.js"></script>
+        <script type="text/javascript" src="matrix\constant.js"></script>
+        <script type="text/javascript" src="matrix\variable.js"></script>
+        <script type="text/javascript" src="matrix\vector.js"></script>
+        <script type="text/javascript" src="matrix\matrix.js"></script>
+        <script type="text/javascript" src="controller\figurecontroller.js"></script>
+        <script type="text/javascript" src="controller\renderer.js"></script>
+        <script type="text/javascript" src="controller\eventcontroller.js"></script>
+        <script type="text/javascript" src="figure\figure.js"></script>
+        <script type="text/javascript" src="figure\point.js"></script>
+        <script type="text/javascript" src="figure\pointer.js"></script>
+        <script type="text/javascript" src="figure\hull.js"></script>
+        <script type="text/javascript" src="figure\convexhull.js"></script>
+        <script type="text/javascript" src="figure\segment.js"></script>
+        <script type="text/javascript" src="figure\arrow.js"></script>
+        <script type="text/javascript" src="figure\polyhedron.js"></script>
+        <script type="text/javascript" src="figure\hypercube.js"></script>
+        <script type="text/javascript" src="figure\canvas.js"></script>
+        <script type="text/javascript" src="figure\crosspoint.js"></script>
     </head>
     <body onload="load();">
-        <canvas id="canvas" style="position: relative; border: 1px dashed;"></canvas><br>
-        click + shift : create point <br>
-        click + ctrl + q : create arrow <br>
-        click + ctrl + x : create convex hull <br>
-        click + f : create half space <br>
-        click : select figures at pointer <br>
-        click + ctrl : add selected figures <br>
-        drag : move selected figures <br>
+        <canvas id="canvas" style="position: relative; border: 1px dashed;"></canvas>
     </body>
 </html>
