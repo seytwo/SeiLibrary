@@ -107,7 +107,7 @@ class Matrix
     {
         throw "not implemented";
     }
-    constant()
+    const()
     {
         throw "not implemented";
     }

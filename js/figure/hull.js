@@ -13,6 +13,8 @@ class Hull extends Figure
             throw "points is not Array";
         }
         this._points = points;
+
+        //this.selectable = false;
     }
     
     // 頂点

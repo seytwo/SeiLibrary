@@ -45,15 +45,11 @@ class ConvexHull extends Hull
             points = this.points;
         }
 
-        // console.log("---", this.name, this.id);
-        // console.log("[" + points.map((point) => point.id) + "]");
-
+        // 
         points = points.filter((point) => 
                     point.position.check((x) => !x.isError())
                     && this.contains(point.position)
                     && fcontroller.canvas.contains(point.position));
-
-        // console.log("[" + points.map((point) => point.id) + "]");
 
         // 3点以下の場合はそのまま出力
         if (points.length <= 3)
@@ -64,12 +60,6 @@ class ConvexHull extends Hull
         // 点のリストをコピー
         points = points.slice();
 
-        // 確認
-        // for (const point of points)
-        // {
-        //     console.log(point.name, point.id, point.position.string);
-        // }
-
         // 重心からの偏角でソート
         const e1 = Vector.convert([1, 0]);
         //const center = this.center.position.constant();
@@ -78,8 +68,6 @@ class ConvexHull extends Hull
             return getOrientedAngle(point1.position.sub(center), e1) 
                 - getOrientedAngle(point2.position.sub(center), e1);
         });
-        
-        // console.log("[" + points.map((point) => point.id) + "]");
         
         // xy座標が最大の頂点を先頭に移動
         const x = Math.max.apply(null, points.map((point) => point.position.get(0).value()));
@@ -91,9 +79,6 @@ class ConvexHull extends Hull
 
         // 残点の最後に先頭の頂点を追加
         points.push(selecteds[0]);
-
-        // console.log("[" + selecteds.map((point) => point.id) + "]" 
-        //     + "[" + points.map((point) => point.id) + "]");
 
         while (points.length != 0)
         {
@@ -114,17 +99,12 @@ class ConvexHull extends Hull
                 if (flag) 
                 {
                     const last = selecteds.pop();
-                    // console.log("del" + last.id + "[" + selecteds.map((point) => point.id) + "]" 
-                    //     + "[" + points.map((point) => point.id) + "]");
                 }
-                
-            } while (flag && selecteds.length >= 2);
+            } 
+            while (flag && selecteds.length >= 2);
 
             // 選択点に追加
             selecteds.push(points.shift());
-            
-            // console.log("add" + point.id + "[" + selecteds.map((point) => point.id) + "]" 
-            //     + "[" + points.map((point) => point.id) + "]");
         }
     
         return selecteds;

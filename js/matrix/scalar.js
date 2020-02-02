@@ -47,6 +47,14 @@ class Scalar
         }
         return scalar;
     }
+    square()
+    {
+        return this.pow(2);
+    }
+    cube()
+    {
+        return this.pow(3);
+    }
     sqrt()
     {
         return new Constant(Math.sqrt(this.value()));

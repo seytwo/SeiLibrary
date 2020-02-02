@@ -33,26 +33,34 @@ class FigureController
     // 図形を取得
     getPointedFigures(position)
     {
+        // 計算量削減のため定数化
+        position = position.constant();
+
+        // ポインタを含む図形を取得
         return this.figures
                 .filter((figure) => figure.contains(position));
     }
-    getVisibleFigures(position)
+    getVisibleFigures(position = null)
     {
-        return this.getPointedFigures(position)
-                .filter((figure) => figure.isVisible());
+        // 位置が入力されなかった場合，すべての図形を取得
+        const figures = (position == null) ? 
+            this.figures : this.getPointedFigures(position);
+
+        // 描画する図形を取得
+        return figures.filter((figure) => figure.isVisible());
     }
-    getSelectableFigures(position)
+    getSelectableFigures(position = null)
     {
         return this.getVisibleFigures(position)
                 .filter((figure) => figure.isSelectable() 
-                                && !figure.isSelected());
+                                    && !figure.isSelected());
     }
-    getSelectedFigures(position) 
+    getSelectedFigures(position = null) 
     {
-        return this.getPointedFigures(position)
+        return this.getVisibleFigures(position)
                 .filter((figure) => figure.isSelected());
     }
-    getMovableFigures(position)
+    getMovableFigures(position = null)
     {
         return this.getSelectedFigures(position)
                 .filter((figure) => figure.isMovable());

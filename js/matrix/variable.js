@@ -27,4 +27,8 @@ class Variable extends Scalar
     {
         return new Constant(this.value());
     }
+    const()
+    {
+        return this.constant();
+    }
 }

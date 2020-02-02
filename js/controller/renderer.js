@@ -36,10 +36,17 @@ class Renderer
     }
     update()
     {
+        const date = Date.now();
+        if (date - this.date < 30)
+        {
+            return;
+        }
+
         this.clear();
-        for (const figure of fcontroller.figures.filter((figure) => figure.isVisible())) 
+        for (const figure of fcontroller.getVisibleFigures()) 
         {
             figure.draw();
         }
+        this.date = Date.now();
     }
 }

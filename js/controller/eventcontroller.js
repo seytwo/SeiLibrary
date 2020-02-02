@@ -19,6 +19,7 @@ class EventController
 
         this._hull = null;
         this._convexhull = null;
+        this._polyhedron = null;
     }
 
     initializeControllEventHandler()
@@ -42,6 +43,7 @@ class EventController
             Hull.mousedown(event);
             ConvexHull.mousedown(event);
             Arrow.mousedown(event);
+            Polyhedron.mousedown(event);
             _this.handle(event);
         };
         renderer.controll.onmousemove = (event) => 
@@ -131,14 +133,18 @@ class EventController
         // すべての選択可能図形に対して
         for (const figure of selectables) 
         {
-            figure.selected = true;
+            this.addSelect(figure);
         }
+    }
+    addSelect(figure)
+    {
+        figure.selected = true;
     }
     resetSelect() 
     {
         console.log("resetSelect");
 
-        for (const figure of fcontroller.figures.filter((figure) => figure.isSelected()))
+        for (const figure of fcontroller.getSelectedFigures())
         {
             figure.selected = false;
         }
@@ -168,7 +174,7 @@ class EventController
         const to = fcontroller.pointer.position.constant();
 
         // すべての選択図形に対して
-        for (const figure of fcontroller.figures.filter((figure) => figure.isSelected())) 
+        for (const figure of fcontroller.getSelectedFigures()) 
         {
             // 移動後の位置を取得
             const position = figure.position.add(to.sub(this._from));

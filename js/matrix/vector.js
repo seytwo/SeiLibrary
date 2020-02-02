@@ -63,6 +63,10 @@ class Vector
     {
         return this.map((x) => x.constant());
     }
+    const()
+    {
+        return this.constant();
+    }
     set(vector)
     {
         if (!(vector instanceof Vector))
@@ -149,7 +153,7 @@ class Vector
     }
     length()
     {
-        return this.reduce((x, y) => x.add(y.pow(2)), new Constant(0)).sqrt();
+        return this.reduce((x, y) => x.add(y.square()), new Constant(0)).sqrt();
     }
     
     check(method) {

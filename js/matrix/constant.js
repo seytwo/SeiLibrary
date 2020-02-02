@@ -22,4 +22,8 @@ class Constant extends Scalar
     {
         return this;
     }
+    const()
+    {
+        return this.constant();
+    }
 }
